@@ -3,6 +3,8 @@ Unit tests to verify that slow and optimized code produce identical results.
 """
 
 import unittest
+import tempfile
+import os
 from slow_code import (
     inefficient_string_concatenation,
     inefficient_list_append,
@@ -10,6 +12,7 @@ from slow_code import (
     nested_loop_search,
     inefficient_filtering,
     inefficient_dictionary_lookup,
+    inefficient_file_operations,
     get_all_factorials as slow_factorials,
 )
 from optimized_code import (
@@ -19,6 +22,8 @@ from optimized_code import (
     efficient_nested_loop_search,
     efficient_filtering,
     efficient_dictionary_lookup,
+    efficient_file_operations,
+    compute_factorials_with_cache,
     get_all_factorials as fast_factorials,
 )
 
@@ -73,6 +78,46 @@ class TestCorrectness(unittest.TestCase):
         slow_dict = dict(slow_result)
         fast_dict = dict(fast_result)
         self.assertEqual(slow_dict, fast_dict)
+    
+    def test_file_operations(self):
+        """Test file operations produce same result."""
+        lines = ['line1', 'line2', 'line3']
+        
+        # Create temporary files for testing
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as slow_file:
+            slow_filename = slow_file.name
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as fast_file:
+            fast_filename = fast_file.name
+        
+        try:
+            # Write using both methods
+            inefficient_file_operations(slow_filename, lines)
+            efficient_file_operations(fast_filename, lines)
+            
+            # Read and compare results
+            with open(slow_filename, 'r') as f:
+                slow_content = f.read()
+            
+            with open(fast_filename, 'r') as f:
+                fast_content = f.read()
+            
+            self.assertEqual(slow_content, fast_content)
+        finally:
+            # Clean up temporary files
+            os.unlink(slow_filename)
+            os.unlink(fast_filename)
+    
+    def test_cached_factorials(self):
+        """Test cached factorial function produces correct results."""
+        # Test individual factorials with cache
+        cache = {}
+        self.assertEqual(compute_factorials_with_cache(5, cache), 120)
+        self.assertEqual(compute_factorials_with_cache(10, cache), 3628800)
+        
+        # Verify cache is being used (10! should be in cache from previous call)
+        self.assertIn(10, cache)
+        self.assertEqual(cache[10], 3628800)
     
     def test_factorials(self):
         """Test factorial computation produces same result."""
