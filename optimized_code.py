@@ -102,11 +102,21 @@ def compute_factorials_with_cache(n, cache=None):
 def get_all_factorials(max_n):
     """
     FAST: Computing factorials iteratively, reusing previous results.
+    
+    Args:
+        max_n: Compute factorials from 1! up to max_n!
+    
+    Returns:
+        List of factorials [1!, 2!, ..., max_n!]
+        Returns empty list if max_n < 1
+        
+    Note: This function returns factorials starting from 1!, not 0!.
+          For mathematical operations needing 0!, use compute_factorials_with_cache(0).
     """
     if max_n < 1:
         return []
     
-    result = [1]  # 0! and 1! = 1
+    result = [1]  # 1! = 1
     current = 1
     
     for i in range(2, max_n + 1):

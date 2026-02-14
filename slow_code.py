@@ -101,6 +101,10 @@ def inefficient_file_operations(filename, lines):
 def compute_factorials_recursively(n):
     """
     SLOW: Recursive without memoization, redundant calculations.
+    
+    Note: Returns 1 for both 0! and 1! (mathematically correct).
+          However, get_all_factorials() returns factorials starting from 1!,
+          not including 0!, to match typical use cases.
     """
     if n <= 1:
         return 1
@@ -110,6 +114,15 @@ def compute_factorials_recursively(n):
 def get_all_factorials(max_n):
     """
     SLOW: Computing factorials from scratch each time.
+    
+    Args:
+        max_n: Compute factorials from 1! up to max_n!
+    
+    Returns:
+        List of factorials [1!, 2!, ..., max_n!]
+        Returns empty list if max_n < 1
+        
+    Note: This function returns factorials starting from 1!, not 0!.
     """
     result = []
     for i in range(1, max_n + 1):
