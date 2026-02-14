@@ -69,6 +69,20 @@ def efficient_file_operations(filename, lines):
 def compute_factorials_with_cache(n, cache=None):
     """
     FAST: Iterative approach with caching.
+    
+    Args:
+        n: The number to compute factorial for
+        cache: Optional dictionary to cache results. If provided, the cache
+               will be modified and persist across calls. This allows efficient
+               computation of multiple factorials by reusing previous results.
+    
+    Returns:
+        The factorial of n
+    
+    Example:
+        cache = {}
+        result1 = compute_factorials_with_cache(5, cache)  # Computes 1! through 5!
+        result2 = compute_factorials_with_cache(10, cache)  # Only computes 6! through 10!
     """
     if cache is None:
         cache = {}

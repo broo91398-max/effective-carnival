@@ -113,11 +113,24 @@ class TestCorrectness(unittest.TestCase):
         # Test individual factorials with cache
         cache = {}
         self.assertEqual(compute_factorials_with_cache(5, cache), 120)
+        
+        # Verify intermediate values are cached (1! through 5!)
+        self.assertIn(1, cache)
+        self.assertIn(5, cache)
+        self.assertEqual(cache[5], 120)
+        
+        # Now compute a larger factorial - should reuse cached values
+        initial_cache_size = len(cache)
         self.assertEqual(compute_factorials_with_cache(10, cache), 3628800)
         
-        # Verify cache is being used (10! should be in cache from previous call)
+        # Verify cache grew (added 6! through 10!)
+        self.assertGreater(len(cache), initial_cache_size)
         self.assertIn(10, cache)
         self.assertEqual(cache[10], 3628800)
+        
+        # Verify earlier values are still cached
+        self.assertIn(5, cache)
+        self.assertEqual(cache[5], 120)
     
     def test_factorials(self):
         """Test factorial computation produces same result."""
@@ -147,6 +160,20 @@ class TestCorrectness(unittest.TestCase):
             inefficient_string_concatenation([42]),
             efficient_string_concatenation([42])
         )
+        
+        # Factorial edge cases
+        # 0! should return empty list (no factorials to compute)
+        self.assertEqual(slow_factorials(0), [])
+        self.assertEqual(fast_factorials(0), [])
+        
+        # 1! should return [1]
+        self.assertEqual(slow_factorials(1), [1])
+        self.assertEqual(fast_factorials(1), [1])
+        
+        # Cached factorial edge cases
+        cache = {}
+        self.assertEqual(compute_factorials_with_cache(0, cache), 1)  # 0! = 1
+        self.assertEqual(compute_factorials_with_cache(1, cache), 1)  # 1! = 1
 
 
 if __name__ == '__main__':
